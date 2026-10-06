@@ -6,7 +6,7 @@ import TestPage from './pages/TestPage';
 import ResultPage from './pages/ResultPage';
 import AdminLoginPage from './pages/AdminLoginPage';
 import AdminDashboardPage from './pages/AdminDashboardPage';
-import { loadDefaultQuestions, formatExamData } from './services/questionLoader';
+import { loadDefaultQuestions, formatExamData, prepareStudentExam } from './services/questionLoader';
 import { exitFullscreen } from './services/proctoring';
 
 export default function App() {
@@ -20,27 +20,15 @@ export default function App() {
   const [isLoadingQuestions, setIsLoadingQuestions] = useState(false);
   const [appError, setAppError] = useState('');
 
-  const handleStartInstructions = (name, batch, customQuestions = null) => {
+  const handleStartInstructions = async (name, batch) => {
     setStudentName(name);
     setBatchNo(batch);
-    if (customQuestions) {
-      setTestData(formatExamData(customQuestions));
-    }
-    setCurrentView('instructions');
-  };
-
-  const handleBeginTest = async () => {
-    if (testData && testData.questions && testData.questions.length > 0) {
-      setCurrentView('test');
-      return;
-    }
-
     setIsLoadingQuestions(true);
     setAppError('');
     try {
       const data = await loadDefaultQuestions();
       setTestData(data);
-      setCurrentView('test');
+      setCurrentView('instructions');
     } catch (err) {
       console.error('Error loading questions:', err);
       setAppError(err.message || 'Unable to load questions from Excel file (questions.xlsx). Make sure questions.xlsx is in the public folder.');
@@ -49,14 +37,33 @@ export default function App() {
     }
   };
 
+  const handleBeginTest = () => {
+    if (!testData || !testData.questions || testData.questions.length === 0) {
+      setAppError('No examination questions loaded.');
+      return;
+    }
+    const studentKey = `${(studentName || '').trim()}_${(batchNo || '').trim()}`.replace(/\s+/g, '_');
+    // Randomize question sequence and shuffle MCQ/MSQ options uniquely for this candidate
+    const studentExam = prepareStudentExam(testData, studentKey);
+    setTestData(studentExam);
+    setCurrentView('test');
+  };
 
   const handleTestSubmitted = (result) => {
     exitFullscreen();
+    const studentKey = `${(studentName || '').trim()}_${(batchNo || '').trim()}`.replace(/\s+/g, '_');
+    try {
+      sessionStorage.removeItem(`exam_shuffled_${studentKey}`);
+    } catch (e) {}
     setLatestResult(result);
     setCurrentView('result');
   };
 
   const handleRetake = () => {
+    const studentKey = `${(studentName || '').trim()}_${(batchNo || '').trim()}`.replace(/\s+/g, '_');
+    try {
+      sessionStorage.removeItem(`exam_shuffled_${studentKey}`);
+    } catch (e) {}
     setStudentName('');
     setBatchNo('');
     setTestData(null);
@@ -133,6 +140,7 @@ export default function App() {
             <InstructionsPage
               studentName={studentName}
               batchNo={batchNo}
+              testData={testData}
               onBeginTest={handleBeginTest}
               onBack={() => setCurrentView('home')}
             />

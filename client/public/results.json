@@ -1,1 +1,378 @@
-﻿[]
+[
+  {
+    "sNo": 4,
+    "id": "res_1791290778715_c9q29m",
+    "studentName": "DCZCZ",
+    "batchNo": "23",
+    "score": 0,
+    "totalMarks": 6,
+    "percentage": 0,
+    "correct": 0,
+    "wrong": 0,
+    "unattempted": 4,
+    "submittedAt": "2026-10-06T12:46:18.715Z",
+    "answers": [
+      {
+        "questionId": 3,
+        "type": "MSQ",
+        "question": "Which of the following are valid primitive data types in JavaScript?",
+        "options": [
+          "Number",
+          "ArrayList",
+          "Boolean",
+          "String"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "String",
+          "Number",
+          "Boolean"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 2
+      },
+      {
+        "questionId": 1,
+        "type": "MCQ",
+        "question": "Which data structure follows the Last In, First Out (LIFO) principle?",
+        "options": [
+          "Array",
+          "Queue",
+          "Stack",
+          "Linked List"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "Stack"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 1
+      },
+      {
+        "questionId": 4,
+        "type": "FILL",
+        "question": "The default port number used by standard HTTP web traffic is ______.",
+        "options": [],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "80"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 1
+      },
+      {
+        "questionId": 2,
+        "type": "DRAG_DROP",
+        "question": "Arrange the shuffled Python lines in the correct order to implement a recursive factorial function:",
+        "options": [
+          "def factorial(n):",
+          "    return n * factorial(n - 1)",
+          " if n <= 1:",
+          "   return 1"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "def factorial(n):",
+          "    if n <= 1:",
+          "        return 1",
+          "    return n * factorial(n - 1)"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "sNo": 3,
+    "id": "res_1791290736815_r9xdcq",
+    "studentName": "DCZCZ",
+    "batchNo": "23",
+    "score": 0,
+    "totalMarks": 6,
+    "percentage": 0,
+    "correct": 0,
+    "wrong": 1,
+    "unattempted": 3,
+    "submittedAt": "2026-10-06T12:45:36.815Z",
+    "answers": [
+      {
+        "questionId": 2,
+        "type": "DRAG_DROP",
+        "question": "Arrange the shuffled Python lines in the correct order to implement a recursive factorial function:",
+        "options": [
+          "def factorial(n):",
+          "    return n * factorial(n - 1)",
+          " if n <= 1:",
+          "   return 1"
+        ],
+        "studentAnswer": [
+          "    return n * factorial(n - 1)",
+          "def factorial(n):",
+          "   return 1",
+          " if n <= 1:"
+        ],
+        "correctAnswer": [
+          "def factorial(n):",
+          "    if n <= 1:",
+          "        return 1",
+          "    return n * factorial(n - 1)"
+        ],
+        "isCorrect": false,
+        "isUnattempted": false,
+        "marksObtained": 0,
+        "marks": 2
+      },
+      {
+        "questionId": 4,
+        "type": "FILL",
+        "question": "The default port number used by standard HTTP web traffic is ______.",
+        "options": [],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "80"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 1
+      },
+      {
+        "questionId": 3,
+        "type": "MSQ",
+        "question": "Which of the following are valid primitive data types in JavaScript?",
+        "options": [
+          "Number",
+          "Boolean",
+          "String",
+          "ArrayList"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "String",
+          "Number",
+          "Boolean"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 2
+      },
+      {
+        "questionId": 1,
+        "type": "MCQ",
+        "question": "Which data structure follows the Last In, First Out (LIFO) principle?",
+        "options": [
+          "Linked List",
+          "Queue",
+          "Array",
+          "Stack"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "Stack"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 1
+      }
+    ],
+    "isTerminated": true,
+    "terminationReason": "Exceeded maximum tab switch / window exit limit (more than 2 times)."
+  },
+  {
+    "sNo": 2,
+    "id": "res_1791290653904_zyyxln",
+    "studentName": "DCX",
+    "batchNo": "23",
+    "score": 0,
+    "totalMarks": 6,
+    "percentage": 0,
+    "correct": 0,
+    "wrong": 1,
+    "unattempted": 3,
+    "submittedAt": "2026-10-06T12:44:13.904Z",
+    "answers": [
+      {
+        "questionId": 1,
+        "type": "MCQ",
+        "question": "Which data structure follows the Last In, First Out (LIFO) principle?",
+        "options": [
+          "Queue",
+          "Stack",
+          "Linked List",
+          "Array"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "Stack"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 1
+      },
+      {
+        "questionId": 4,
+        "type": "FILL",
+        "question": "The default port number used by standard HTTP web traffic is ______.",
+        "options": [],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "80"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 1
+      },
+      {
+        "questionId": 2,
+        "type": "DRAG_DROP",
+        "question": "Arrange the shuffled Python lines in the correct order to implement a recursive factorial function:",
+        "options": [
+          "def factorial(n):",
+          "    return n * factorial(n - 1)",
+          " if n <= 1:",
+          "   return 1"
+        ],
+        "studentAnswer": [
+          "def factorial(n):",
+          "    return n * factorial(n - 1)",
+          " if n <= 1:",
+          "   return 1"
+        ],
+        "correctAnswer": [
+          "def factorial(n):",
+          "    if n <= 1:",
+          "        return 1",
+          "    return n * factorial(n - 1)"
+        ],
+        "isCorrect": false,
+        "isUnattempted": false,
+        "marksObtained": 0,
+        "marks": 2
+      },
+      {
+        "questionId": 3,
+        "type": "MSQ",
+        "question": "Which of the following are valid primitive data types in JavaScript?",
+        "options": [
+          "Boolean",
+          "String",
+          "Number",
+          "ArrayList"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "String",
+          "Number",
+          "Boolean"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 2
+      }
+    ]
+  },
+  {
+    "sNo": 1,
+    "id": "res_1791290628835_5i7l3t",
+    "studentName": "WWDDF",
+    "batchNo": "323",
+    "score": 0,
+    "totalMarks": 6,
+    "percentage": 0,
+    "correct": 0,
+    "wrong": 0,
+    "unattempted": 4,
+    "submittedAt": "2026-10-06T12:43:48.835Z",
+    "answers": [
+      {
+        "questionId": 1,
+        "type": "MCQ",
+        "question": "Which data structure follows the Last In, First Out (LIFO) principle?",
+        "options": [
+          "Array",
+          "Stack",
+          "Queue",
+          "Linked List"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "Stack"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 1
+      },
+      {
+        "questionId": 3,
+        "type": "MSQ",
+        "question": "Which of the following are valid primitive data types in JavaScript?",
+        "options": [
+          "ArrayList",
+          "Number",
+          "Boolean",
+          "String"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "String",
+          "Number",
+          "Boolean"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 2
+      },
+      {
+        "questionId": 4,
+        "type": "FILL",
+        "question": "The default port number used by standard HTTP web traffic is ______.",
+        "options": [],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "80"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 1
+      },
+      {
+        "questionId": 2,
+        "type": "DRAG_DROP",
+        "question": "Arrange the shuffled Python lines in the correct order to implement a recursive factorial function:",
+        "options": [
+          "def factorial(n):",
+          "    return n * factorial(n - 1)",
+          " if n <= 1:",
+          "   return 1"
+        ],
+        "studentAnswer": [],
+        "correctAnswer": [
+          "def factorial(n):",
+          "    if n <= 1:",
+          "        return 1",
+          "    return n * factorial(n - 1)"
+        ],
+        "isCorrect": false,
+        "isUnattempted": true,
+        "marksObtained": 0,
+        "marks": 2
+      }
+    ]
+  }
+]

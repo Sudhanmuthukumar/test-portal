@@ -6,13 +6,17 @@ import {
   getStoredResults,
   exportResultsToExcel,
   clearAllStoredResults,
-  downloadQuestionTemplate
+  downloadQuestionTemplate,
+  getExamSettings,
+  saveExamSettings
 } from '../services/storage';
 
 export default function AdminDashboardPage({ onGoToStudentPortal, onLogout }) {
   const [activeTab, setActiveTab] = useState('questions'); // 'questions' | 'results'
   const [questions, setQuestions] = useState([]);
   const [results, setResults] = useState([]);
+  const [examDuration, setExamDuration] = useState(30);
+  const [isSavingDuration, setIsSavingDuration] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusMessage, setStatusMessage] = useState({ type: '', text: '' });
   const [isLoading, setIsLoading] = useState(true);
@@ -40,6 +44,12 @@ export default function AdminDashboardPage({ onGoToStudentPortal, onLogout }) {
       // 2. Load stored results from local backend
       const stored = await getStoredResults();
       setResults(stored);
+
+      // 3. Load exam duration settings
+      const settings = await getExamSettings();
+      if (settings && settings.durationMinutes) {
+        setExamDuration(Number(settings.durationMinutes) || 30);
+      }
     } catch (err) {
       console.error('Error loading admin data:', err);
       setStatusMessage({ type: 'error', text: `Failed to load data: ${err.message}` });
@@ -102,6 +112,28 @@ export default function AdminDashboardPage({ onGoToStudentPortal, onLogout }) {
     await clearAllStoredResults();
     setResults([]);
     setStatusMessage({ type: 'success', text: 'All stored examination results have been cleared.' });
+  };
+
+  // Alter exam countdown duration
+  const handleSaveDuration = async (e) => {
+    if (e) e.preventDefault();
+    const minutes = Math.max(1, Math.min(300, Number(examDuration) || 30));
+    setIsSavingDuration(true);
+    try {
+      await saveExamSettings({ durationMinutes: minutes });
+      setExamDuration(minutes);
+      setStatusMessage({
+        type: 'success',
+        text: `✓ Examination time successfully set to ${minutes} minutes for all candidates across all computers.`
+      });
+    } catch (err) {
+      setStatusMessage({
+        type: 'error',
+        text: `Failed to save examination duration: ${err.message}`
+      });
+    } finally {
+      setIsSavingDuration(false);
+    }
   };
 
   // Stats calculation
@@ -234,6 +266,63 @@ export default function AdminDashboardPage({ onGoToStudentPortal, onLogout }) {
       {/* TAB 1: QUESTION MANAGEMENT (EXCEL) */}
       {activeTab === 'questions' && (
         <div>
+          {/* Exam Duration / Timing Card */}
+          <div className="card" style={{ borderTop: '4px solid #0284c7', marginBottom: '1.5rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+              <div>
+                <h3 style={{ fontSize: '1.15rem', color: 'var(--primary)', margin: 0, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <span>⏱️</span> Examination Duration (Time Allotted)
+                </h3>
+                <div style={{ fontSize: '0.85rem', color: 'var(--gray)', marginTop: '0.2rem' }}>
+                  Set the total countdown time given to each candidate on the student examination portal.
+                </div>
+              </div>
+
+              <form onSubmit={handleSaveDuration} style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <input
+                    type="number"
+                    min="1"
+                    max="300"
+                    className="form-input"
+                    style={{ width: '85px', padding: '0.45rem 0.65rem', fontWeight: 700, textAlign: 'center' }}
+                    value={examDuration}
+                    onChange={(e) => setExamDuration(e.target.value)}
+                  />
+                  <span style={{ fontWeight: 600, color: 'var(--dark)', fontSize: '0.9rem' }}>Minutes</span>
+                </div>
+
+                <div style={{ display: 'flex', gap: '0.35rem' }}>
+                  {[15, 30, 45, 60].map((mins) => (
+                    <button
+                      key={mins}
+                      type="button"
+                      className="btn btn-outline btn-sm"
+                      style={{
+                        padding: '0.35rem 0.6rem',
+                        fontSize: '0.8rem',
+                        background: Number(examDuration) === mins ? 'var(--primary)' : 'transparent',
+                        color: Number(examDuration) === mins ? 'white' : 'inherit'
+                      }}
+                      onClick={() => setExamDuration(mins)}
+                    >
+                      {mins}m
+                    </button>
+                  ))}
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-sm"
+                  disabled={isSavingDuration}
+                  style={{ padding: '0.45rem 1rem' }}
+                >
+                  {isSavingDuration ? 'Saving...' : '💾 Save Time'}
+                </button>
+              </form>
+            </div>
+          </div>
+
           {/* Upload Banner Card */}
           <div className="card" style={{ borderTop: '4px solid var(--primary)', marginBottom: '1.5rem' }}>
             <h3 style={{ fontSize: '1.15rem', color: 'var(--primary)', marginBottom: '0.5rem' }}>

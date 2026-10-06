@@ -255,3 +255,63 @@ export function downloadQuestionTemplate() {
   xlsx.writeFile(wb, 'questions_template.xlsx');
 }
 
+const SETTINGS_KEY = 'exam_settings';
+
+/**
+ * Retrieves exam settings (e.g. durationMinutes) from host local backend (/api/settings)
+ * with fallback to localStorage and defaults.
+ * @returns {Promise<Object>} Exam settings object { durationMinutes }
+ */
+export async function getExamSettings() {
+  try {
+    const res = await fetch('/api/settings');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.durationMinutes) {
+        try {
+          localStorage.setItem(SETTINGS_KEY, JSON.stringify(data));
+        } catch (e) {}
+        return data;
+      }
+    }
+  } catch (err) {
+    console.warn('Could not fetch settings from backend:', err.message);
+  }
+
+  try {
+    const cached = localStorage.getItem(SETTINGS_KEY);
+    if (cached) return JSON.parse(cached);
+  } catch (e) {}
+
+  return { durationMinutes: 30 };
+}
+
+/**
+ * Saves exam settings into host local backend (/api/settings) and localStorage
+ * @param {Object} settings - Settings object { durationMinutes }
+ * @returns {Promise<Object>} Updated settings
+ */
+export async function saveExamSettings(settings) {
+  try {
+    const res = await fetch('/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(settings)
+    });
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.settings) {
+        settings = data.settings;
+      }
+    }
+  } catch (err) {
+    console.warn('Could not persist settings to backend:', err.message);
+  }
+
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+  } catch (e) {}
+
+  return settings;
+}
+

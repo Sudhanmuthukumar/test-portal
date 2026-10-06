@@ -1,5 +1,5 @@
 import * as xlsx from 'xlsx';
-import { getUploadedQuestions } from './storage';
+import { getUploadedQuestions, getExamSettings } from './storage';
 
 /**
  * Shuffles an array in-place using Fisher-Yates algorithm,
@@ -195,14 +195,92 @@ export function parseWorkbook(data) {
 }
 
 /**
+ * Generic Fisher-Yates array shuffler returning a new shuffled array
+ */
+export function shuffleArray(arr) {
+  if (!Array.isArray(arr) || arr.length <= 1) return arr ? [...arr] : [];
+  const result = [...arr];
+  for (let i = result.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+}
+
+/**
+ * Prepares a unique, randomized examination for a student:
+ * 1. Shuffles question order.
+ * 2. Shuffles options ONLY for MCQ and MSQ questions (never for FILL or DRAG_DROP).
+ * Optionally caches to sessionStorage so a student's question/option order remains consistent across refreshes.
+ * @param {Object} masterExamData - Master test package
+ * @param {string|null} studentSessionKey - Unique student session identifier
+ * @returns {Object} Student-customized exam data
+ */
+export function prepareStudentExam(masterExamData, studentSessionKey = null) {
+  if (!masterExamData || !Array.isArray(masterExamData.questions)) {
+    return masterExamData;
+  }
+
+  // Restore existing shuffled session if student refreshes mid-test
+  if (studentSessionKey) {
+    try {
+      const cached = sessionStorage.getItem(`exam_shuffled_${studentSessionKey}`);
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (parsed && Array.isArray(parsed.questions) && parsed.questions.length === masterExamData.questions.length) {
+          return {
+            ...masterExamData,
+            questions: parsed.questions
+          };
+        }
+      }
+    } catch (e) {}
+  }
+
+  // 1. Shuffle question sequence for this student
+  const shuffledQuestions = shuffleArray(masterExamData.questions).map((q) => {
+    // 2. Shuffle options ONLY for MCQ and MSQ
+    if ((q.type === 'MCQ' || q.type === 'MSQ') && Array.isArray(q.options) && q.options.length > 1) {
+      return {
+        ...q,
+        options: shuffleArray(q.options)
+      };
+    }
+
+    // For FILL and DRAG_DROP, keep options exactly as loaded
+    return {
+      ...q,
+      options: Array.isArray(q.options) ? [...q.options] : q.options
+    };
+  });
+
+  const studentExam = {
+    ...masterExamData,
+    questions: shuffledQuestions
+  };
+
+  if (studentSessionKey) {
+    try {
+      sessionStorage.setItem(`exam_shuffled_${studentSessionKey}`, JSON.stringify(studentExam));
+    } catch (e) {}
+  }
+
+  return studentExam;
+}
+
+/**
  * Fetches default questions: checks admin-uploaded questions first,
  * then falls back to /questions.xlsx in public directory.
+ * Also retrieves dynamic exam duration from backend settings.
  * @returns {Promise<Object>} Exam data with title, duration, marks, and questions
  */
 export async function loadDefaultQuestions() {
+  const settings = await getExamSettings();
+  const durationMinutes = Math.max(1, Number(settings?.durationMinutes) || 30);
+
   const adminSaved = getUploadedQuestions();
   if (adminSaved && Array.isArray(adminSaved) && adminSaved.length > 0) {
-    return formatExamData(adminSaved);
+    return formatExamData(adminSaved, durationMinutes);
   }
 
   // 1. Try active_exam.xlsx (if uploaded by admin on host)
@@ -223,7 +301,7 @@ export async function loadDefaultQuestions() {
   }
 
   const questions = parseWorkbook(buffer);
-  return formatExamData(questions);
+  return formatExamData(questions, durationMinutes);
 }
 
 /**
@@ -233,7 +311,7 @@ export function formatExamData(questions, durationMinutes = 30) {
   const totalMarks = questions.reduce((sum, q) => sum + (q.marks || 1), 0);
   return {
     title: 'Test portal',
-    durationMinutes,
+    durationMinutes: Math.max(1, Number(durationMinutes) || 30),
     totalQuestions: questions.length,
     totalMarks,
     questions

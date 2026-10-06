@@ -1,7 +1,11 @@
 import React from 'react';
 import { enterFullscreen } from '../services/proctoring';
 
-export default function InstructionsPage({ studentName, batchNo, onBeginTest, onBack }) {
+export default function InstructionsPage({ studentName, batchNo, testData, onBeginTest, onBack }) {
+  const questionCount = testData?.questions?.length ?? testData?.totalQuestions ?? 0;
+  const durationMinutes = testData?.durationMinutes ?? 30;
+  const totalMarks = testData?.totalMarks ?? 0;
+
   const handleStart = () => {
     enterFullscreen();
     onBeginTest();
@@ -18,21 +22,21 @@ export default function InstructionsPage({ studentName, batchNo, onBeginTest, on
               {batchNo && <span> | Batch: <strong>{batchNo}</strong></span>}
             </div>
           </div>
-          <span className="badge badge-primary">30 Minutes</span>
+          <span className="badge badge-primary">{durationMinutes} Minutes</span>
         </div>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1.5rem' }}>
           <div style={{ background: '#f8fafc', padding: '0.85rem', borderRadius: '6px', border: '1px solid var(--border)' }}>
             <div style={{ fontSize: '0.75rem', color: 'var(--gray)', fontWeight: 600 }}>DURATION</div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>30 Mins</div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>{durationMinutes} Mins</div>
           </div>
           <div style={{ background: '#f8fafc', padding: '0.85rem', borderRadius: '6px', border: '1px solid var(--border)' }}>
             <div style={{ fontSize: '0.75rem', color: 'var(--gray)', fontWeight: 600 }}>QUESTIONS</div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>15 Questions</div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>{questionCount} Questions</div>
           </div>
           <div style={{ background: '#f8fafc', padding: '0.85rem', borderRadius: '6px', border: '1px solid var(--border)' }}>
             <div style={{ fontSize: '0.75rem', color: 'var(--gray)', fontWeight: 600 }}>MAX MARKS</div>
-            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>20 Marks</div>
+            <div style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--primary)' }}>{totalMarks} Marks</div>
           </div>
         </div>
 

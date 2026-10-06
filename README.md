@@ -48,11 +48,28 @@ Under **"📊 Candidate Results"** in the Admin Dashboard:
 - Click **"📥 Export All Results (res.xlsx)"** to download the comprehensive results spreadsheet.
 - The results are saved on the admin's local host disk at `client/public/res.xlsx` and `client/public/results.json`.
 
+### E. Alterable Examination Duration (Time Allotted)
+Under **"📂 Manage Questions (Excel)"** in the Admin Dashboard:
+- Admin can adjust the examination duration (e.g., 15, 30, 45, 60 minutes) directly from the dashboard.
+- The altered time is saved to `public/exam_settings.json` on the host machine and immediately applies to all candidates across all computers.
+
 > **Note on Student Privacy**: Students see **only their own scorecard** when they submit their test. They cannot see other candidates' scores or download the class results. Only the admin has access to all results.
 
 ---
 
-## 2. Drag & Drop Code Line Ordering (`DRAG_DROP`)
+## 2. Dynamic Instructions & Anti-Cheating Shuffling
+
+1. **Dynamic Instruction Page**:
+   - Total Questions, Time Allotted, and Maximum Marks are dynamically loaded from the backend spreadsheet and settings, not hardcoded.
+2. **Randomized Question Order per Candidate**:
+   - Each student receives examination questions in an independently randomized sequence.
+3. **Randomized MCQ & MSQ Option Order**:
+   - Choices for Multiple Choice (MCQ) and Multiple Select (MSQ) questions are shuffled uniquely for each student.
+   - Fill-in-the-blank (FILL) and Drag & Drop code ordering (DRAG_DROP) options are preserved without altering their structure.
+
+---
+
+## 3. Drag & Drop Code Line Ordering (`DRAG_DROP`)
 
 For code questions, lines are written in the `options` or `answer` column separated by newlines:
 - When a candidate enters the exam, the system **automatically shuffles the code lines**.
@@ -62,7 +79,7 @@ For code questions, lines are written in the `options` or `answer` column separa
 
 ---
 
-## 3. Strict Proctoring & Exam Integrity
+## 4. Strict Proctoring & Exam Integrity
 
 1. **Automatic Full Screen Activation & Exit**:
    - The exam automatically locks into **Full Screen** mode when the candidate starts the test.
@@ -79,7 +96,7 @@ For code questions, lines are written in the `options` or `answer` column separa
 
 ---
 
-## 4. Project File Directory & Descriptions
+## 5. Project File Directory & Descriptions
 
 ```text
 c:\cse\
@@ -88,11 +105,12 @@ c:\cse\
 └── client/                                      # Standalone React 18 + Vite Application
     ├── index.html                               # HTML title: "Test portal"
     ├── package.json                             # Dependencies: react, react-dom, xlsx, vite
-    ├── vite.config.js                           # Server config & local backend handlers (/api/results, /api/upload-questions)
+    ├── vite.config.js                           # Server config & local backend handlers (/api/results, /api/settings, /api/upload-questions)
     │
     ├── public/
     │   ├── questions.xlsx                       # Default Excel questions file
     │   ├── active_exam.xlsx                     # Active exam spreadsheet (when uploaded by admin)
+    │   ├── exam_settings.json                   # Configurable exam duration in minutes (alterable by admin)
     │   ├── res.xlsx                             # Consolidated Excel results file (generated on local host machine)
     │   └── results.json                         # Central JSON storage for all student submissions
     │
@@ -112,22 +130,22 @@ c:\cse\
         │
         ├── pages/
         │   ├── AdminLoginPage.jsx               # Admin login screen (admin / welcome)
-        │   ├── AdminDashboardPage.jsx           # Admin dashboard: Excel question upload & results table with Export
+        │   ├── AdminDashboardPage.jsx           # Admin dashboard: Excel question upload, exam duration settings & results table
         │   ├── HomePage.jsx                     # Candidate login (Student Full Name: Peter / Batch No: 251001)
-        │   ├── InstructionsPage.jsx             # Exam rules & fullscreen trigger
+        │   ├── InstructionsPage.jsx             # Dynamic exam rules & fullscreen trigger
         │   ├── TestPage.jsx                     # Examination interface with proctoring & tab-switch tracker
         │   └── ResultPage.jsx                   # Student-only scorecard (individual score & review, no class export)
         │
         └── services/
             ├── evaluator.js                     # Client evaluation engine for MCQ, MSQ, FILL & DRAG_DROP
-            ├── questionLoader.js                # Parses Excel (.xlsx/.xls) questions and shuffles code lines
-            ├── storage.js                       # Syncs student results to local backend & browser storage
+            ├── questionLoader.js                # Parses Excel, dynamic settings, & shuffles questions/options per candidate
+            ├── storage.js                       # Syncs student results and settings to local backend & browser storage
             └── proctoring.js                    # Fullscreen control and tab-switch detection
 ```
 
 ---
 
-## 5. College Lab & Admin Setup (How to Connect)
+## 6. College Lab & Admin Setup (How to Connect)
 
 ### Step 1: Start the Server on the Admin / Host PC
 Open PowerShell on the host PC running the test portal:

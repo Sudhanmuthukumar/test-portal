@@ -214,8 +214,47 @@ function localBackendPlugin() {
     }
   };
 
+  const handleSettings = (req, res) => {
+    const settingsPath = path.resolve(__dirname, 'public', 'exam_settings.json');
+    if (req.method === 'GET') {
+      let settings = { durationMinutes: 30 };
+      if (fs.existsSync(settingsPath)) {
+        try {
+          settings = JSON.parse(fs.readFileSync(settingsPath, 'utf8'));
+        } catch (e) {}
+      }
+      res.setHeader('Content-Type', 'application/json');
+      res.end(JSON.stringify(settings));
+    } else if (req.method === 'POST') {
+      const chunks = [];
+      req.on('data', chunk => chunks.push(chunk));
+      req.on('end', () => {
+        try {
+          const bodyStr = Buffer.concat(chunks).toString('utf8');
+          const data = JSON.parse(bodyStr);
+          const durationMinutes = Math.max(1, Math.min(300, Number(data.durationMinutes) || 30));
+          const updated = { durationMinutes };
+          fs.writeFileSync(settingsPath, JSON.stringify(updated, null, 2), 'utf8');
+          console.log(`[BACKEND] Exam duration altered to ${durationMinutes} minutes.`);
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ success: true, settings: updated }));
+        } catch (err) {
+          res.statusCode = 500;
+          res.setHeader('Content-Type', 'application/json');
+          res.end(JSON.stringify({ success: false, error: err.message }));
+        }
+      });
+    } else {
+      res.statusCode = 405;
+      res.end('Method Not Allowed');
+    }
+  };
+
   const handleStaticGuard = (req, res, next) => {
     const rawPath = (req.url || '').split('?')[0];
+    if (rawPath.startsWith('/api/')) {
+      return next();
+    }
     if (rawPath.endsWith('.xlsx') || rawPath.endsWith('.xls') || rawPath.endsWith('.json')) {
       const filePath = path.resolve(__dirname, 'public', rawPath.replace(/^\//, ''));
       if (!fs.existsSync(filePath)) {
@@ -234,11 +273,13 @@ function localBackendPlugin() {
       server.middlewares.use(handleStaticGuard);
       server.middlewares.use('/api/upload-questions', handleUploadQuestions);
       server.middlewares.use('/api/results', handleResults);
+      server.middlewares.use('/api/settings', handleSettings);
     },
     configurePreviewServer(server) {
       server.middlewares.use(handleStaticGuard);
       server.middlewares.use('/api/upload-questions', handleUploadQuestions);
       server.middlewares.use('/api/results', handleResults);
+      server.middlewares.use('/api/settings', handleSettings);
     }
   };
 }
